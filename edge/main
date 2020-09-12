@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import json
+import logging
 from sender import Sender
 from reader import Reader
 
@@ -10,9 +11,16 @@ BAUD = 9600
 reader = Reader(port=PORT, baud=BAUD)
 sender = Sender(port=PORT, baud=BAUD)
 
+controll = int(0)
+
 while(1):
     presence = json.loads(reader.getData())['presence']
 
-    if(presence == True):
+    if ((presence == True) and (controll < 2)):
         sender.alimentar()
-        print('PET ALIMENTADO.\n')
+        logging.info('PET ALIMENTADO.\n')
+        controll += 1
+
+    if (controll == 2):
+        time.sleep(3600)
+        controll = int(0)
